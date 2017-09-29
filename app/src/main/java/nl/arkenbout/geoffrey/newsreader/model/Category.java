@@ -1,4 +1,4 @@
-package inholland.nl.newsreader.model;
+package nl.arkenbout.geoffrey.newsreader.model;
 
 public class Category {
     private int Id;

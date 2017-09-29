@@ -4,4 +4,8 @@
     android:id="@+id/recyclerList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="inholland.nl.newsreader.MainActivity"></android.support.v7.widget.RecyclerView>
+    android:clipToPadding="false"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    tools:context="nl.arkenbout.geoffrey.newsreader.activity.MainActivity"
+    tools:listitem="@layout/news_list_item" />

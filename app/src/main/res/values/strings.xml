@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">newsreader</string>
+    <string name="app_name">InHolland newsreader - 560825</string>
+    <string name="refresh">Ververs</string>
+    <string name="share">Deel</string>
+    <string name="backend_url">http://inhollandbackend.azurewebsites.net/</string>
+    <string name="related">Gerelateerd</string>
+    <string name="readMore">Lees meer</string>
 </resources>
