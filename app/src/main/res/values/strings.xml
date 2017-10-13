@@ -5,4 +5,15 @@
     <string name="backend_url">http://inhollandbackend.azurewebsites.net/</string>
     <string name="related">Gerelateerd</string>
     <string name="readMore">Lees meer</string>
+    <string name="login">Log in</string>
+    <string name="drawerOpen">Open</string>
+    <string name="drawerClosed">Closed</string>
+
+    <string name="usernameHint">Gebruikersnaam</string>
+    <string name="passwordHint">Wachtwoord</string>
+    <string name="error_username_empty">Er is geen gebruikersnaam ingevuld</string>
+    <string name="error_password_empty">Er is geen wachtwoord ingevuld</string>
+    <string name="error_password_too_short">Het ingevulde wachtwoord is te kort</string>
+    <string name="error_login_failed">Er is iets misgegaan met het inloggen: %1$s</string>
+    <string name="toast_logged_in">Ingelogd</string>
 </resources>

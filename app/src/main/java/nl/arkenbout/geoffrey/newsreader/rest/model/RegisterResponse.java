@@ -1,4 +1,4 @@
-package nl.arkenbout.geoffrey.newsreader.service.responses;
+package nl.arkenbout.geoffrey.newsreader.rest.model;
 
 public class RegisterResponse {
     private boolean Success;

@@ -1,4 +1,4 @@
-package nl.arkenbout.geoffrey.newsreader.adapter;
+package nl.arkenbout.geoffrey.newsreader.app.listener;
 
 public interface OnLoadMoreListener {
     void onLoadMore();

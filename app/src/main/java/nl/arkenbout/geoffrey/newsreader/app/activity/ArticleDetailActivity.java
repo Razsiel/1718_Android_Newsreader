@@ -1,4 +1,4 @@
-package nl.arkenbout.geoffrey.newsreader.activity;
+package nl.arkenbout.geoffrey.newsreader.app.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -40,10 +40,10 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
         if (article == null) return;
         // Get view elements
-        ImageView imageView = (ImageView) findViewById(R.id.article_image);
-        TextView publishView = (TextView) findViewById(R.id.article_publish_date);
-        TextView titleView = (TextView) findViewById(R.id.article_title);
-        TextView summaryView = (TextView) findViewById(R.id.article_summary);
+        final ImageView imageView = (ImageView) findViewById(R.id.article_image);
+        final TextView publishView = (TextView) findViewById(R.id.article_publish_date);
+        final TextView titleView = (TextView) findViewById(R.id.article_title);
+        final TextView summaryView = (TextView) findViewById(R.id.article_summary);
 
         Button readMoreBtn = (Button) findViewById(R.id.read_more_btn);
         readMoreBtn.setOnClickListener(this);

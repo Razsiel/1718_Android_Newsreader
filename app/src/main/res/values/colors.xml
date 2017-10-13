@@ -4,4 +4,6 @@
 
     <color name="colorPrimary">#E00279</color>
     <color name="colorPrimaryDark">#BD0266</color>
+    <color name="neutral">#C0C0C0</color>
+    <color name="dark">#444</color>
 </resources>

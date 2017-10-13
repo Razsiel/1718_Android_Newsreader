@@ -1,6 +1,6 @@
-package nl.arkenbout.geoffrey.newsreader.service;
+package nl.arkenbout.geoffrey.newsreader.rest.service;
 
-import nl.arkenbout.geoffrey.newsreader.service.responses.ArticleResult;
+import nl.arkenbout.geoffrey.newsreader.rest.model.ArticleResult;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;

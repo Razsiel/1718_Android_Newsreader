@@ -1,4 +1,4 @@
-package nl.arkenbout.geoffrey.newsreader.service;
+package nl.arkenbout.geoffrey.newsreader.rest.service;
 
 
 import java.util.List;
