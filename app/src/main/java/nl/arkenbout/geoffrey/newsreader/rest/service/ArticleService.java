@@ -36,11 +36,7 @@ public interface ArticleService {
     @PUT("articles/{id}/like")
     Call<Void> putLikeArticle(
             @Header("x-authtoken") String authtoken,
-            @Path("id") Integer articleId,
-            @Query("count") Integer count,
-            @Query("feed") Integer feed,
-            @Query("feeds") String feeds,
-            @Query("category") Integer category);
+            @Path("id") Integer articleId);
 
     @DELETE("articles/{id}/like")
     Call<Void> deleteLikeArticle(

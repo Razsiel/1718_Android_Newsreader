@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 
 import nl.arkenbout.geoffrey.newsreader.R;
-import nl.arkenbout.geoffrey.newsreader.app.adapter.NewsItemAdapter;
+import nl.arkenbout.geoffrey.newsreader.app.adapter.ArticleListItemAdapter;
 import nl.arkenbout.geoffrey.newsreader.app.listener.ListItemClickListener;
 import nl.arkenbout.geoffrey.newsreader.model.Article;
 import nl.arkenbout.geoffrey.newsreader.model.User;
@@ -31,9 +31,12 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     public static final String INTENT_ARTICLE = "intent_article";
     private final int scrollLenience = 10;
     private final int loginRequestCode = 100;
+    private final int detailRequestCode = 200;
+
     private RecyclerView listView;
-    private NewsItemAdapter adapter;
+    private ArticleListItemAdapter adapter;
     private LinearLayoutManager verticalList;
+
     private ProgressBar progressBar;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle drawerToggle;
@@ -44,23 +47,23 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar = findViewById(R.id.progressbar);
 
         initRecyclerView();
         initToolbar();
 
         // Load initial items
-        adapter.onLoadMore();
+        adapter.reload();
     }
 
     private void initRecyclerView() {
         // Prepare listView for recycling
-        listView = (RecyclerView) findViewById(R.id.recyclerList);
+        listView = findViewById(R.id.recyclerList);
         verticalList = new LinearLayoutManager(this);
         listView.setLayoutManager(verticalList);
 
         // Adapter with viewModel
-        adapter = new NewsItemAdapter(this, new ArrayList<Article>(), progressBar);
+        adapter = new ArticleListItemAdapter(this, new ArrayList<Article>(), progressBar);
         listView.setAdapter(adapter);
 
         // Add scroll listener
@@ -83,11 +86,11 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
     private void initToolbar() {
         // Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Drawer
-        drawer = (DrawerLayout) findViewById(R.id.drawer);
+        drawer = findViewById(R.id.drawer);
         drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawerOpen, R.string.drawerClosed) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
         // Drawer content
         if (TextUtils.isEmpty(User.getAuthtoken())) {
-            loginButton = (Button) findViewById(R.id.login_button);
+            loginButton = findViewById(R.id.login_button);
             loginButton.setOnClickListener(this);
         }
     }
@@ -127,25 +130,29 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                adapter.refresh();
+                adapter.reload();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(View view, int position) {
         Intent intent = new Intent(this, ArticleDetailActivity.class);
+
+        // Setup UI animation
+        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this,
+                new Pair<>(view.findViewById(R.id.article_image), ArticleDetailActivity.VIEW_NAME_ARTICLE_IMAGE),
+                new Pair<>(view.findViewById(R.id.article_title), ArticleDetailActivity.VIEW_NAME_ARTICLE_TITLE),
+                new Pair<>(view.findViewById(R.id.article_summary), ArticleDetailActivity.VIEW_NAME_ARTICLE_SUMMARY));
+
+        // Pass data into intent
         Article article = adapter.getItem(position);
         intent.putExtra(MainActivity.INTENT_ARTICLE, article);
 
-        ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this,
-                new Pair<>(findViewById(R.id.article_image), ArticleDetailActivity.VIEW_NAME_ARTICLE_IMAGE),
-                new Pair<>(findViewById(R.id.article_title), ArticleDetailActivity.VIEW_NAME_ARTICLE_TITLE),
-                new Pair<>(findViewById(R.id.article_summary), ArticleDetailActivity.VIEW_NAME_ARTICLE_SUMMARY));
-
-        startActivity(intent, activityOptions.toBundle());
+        startActivityForResult(intent, detailRequestCode, activityOptions.toBundle());
     }
 
     @Override
@@ -154,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
             case R.id.login_button:
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, loginRequestCode);
+                break;
             default:
                 break;
         }
@@ -162,10 +170,37 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == loginRequestCode && resultCode == RESULT_OK) {
-            loginButton.setVisibility(View.GONE);
-            drawer.closeDrawers();
-            adapter.refresh();
+        switch (requestCode) {
+            // called from the login activity result
+            case loginRequestCode:
+                if (resultCode == RESULT_OK) {
+                    onLoginActivityResult();
+                }
+                break;
+            // called from the article detail activity result
+            case detailRequestCode:
+                if (resultCode == RESULT_OK) {
+                    onDetailActivityResult(data);
+                }
+                break;
+            default:
+                break;
         }
+    }
+
+    private void onLoginActivityResult() {
+        loginButton.setVisibility(View.GONE);
+        drawer.closeDrawers();
+        adapter.reload();
+    }
+
+    private void onDetailActivityResult(Intent data) {
+        Article article = data.getParcelableExtra(INTENT_ARTICLE);
+
+        // data could not be parsed
+        if (article == null) return;
+
+        adapter.updateArticle(article);
+        adapter.refresh();
     }
 }

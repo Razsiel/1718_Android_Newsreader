@@ -20,6 +20,10 @@ public class User {
         authtoken = token;
     }
 
+    public static boolean isLoggedIn() {
+        return getAuthtoken() != null && !getAuthtoken().isEmpty();
+    }
+
     public String getUsername() {
         return username;
     }

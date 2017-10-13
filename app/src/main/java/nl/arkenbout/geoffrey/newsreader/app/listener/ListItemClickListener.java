@@ -1,6 +1,8 @@
 package nl.arkenbout.geoffrey.newsreader.app.listener;
 
 
+import android.view.View;
+
 public interface ListItemClickListener {
-    void onItemClick(int position);
+    void onItemClick(View view, int position);
 }
