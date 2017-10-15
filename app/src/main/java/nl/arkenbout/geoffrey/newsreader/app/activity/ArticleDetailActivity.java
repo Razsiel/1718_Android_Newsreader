@@ -10,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -42,6 +44,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private TextView publishView;
     private TextView titleView;
     private TextView summaryView;
+    private LinearLayout relatedArticles;
 
     private Article article;
     private ArticleService articleService;
@@ -75,6 +78,17 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         titleView.setText(String.format(Locale.getDefault(), "%s", article.getTitle()));
         summaryView.setText(String.format(Locale.getDefault(), "%s", article.getSummary()));
         likeButton.setChecked(article.getIsLiked());
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        for (String related : article.getRelated()) {
+            Button button = new Button(this);
+            button.setId(R.id.related_articles);
+            button.setGravity(View.TEXT_ALIGNMENT_TEXT_START);
+            button.setLayoutParams(lp);
+            button.setText(related);
+            relatedArticles.addView(button);
+            button.setOnClickListener(this);
+        }
     }
 
     private void initViews() {
@@ -100,6 +114,8 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         imageView.setTransitionName(VIEW_NAME_ARTICLE_IMAGE);
         titleView.setTransitionName(VIEW_NAME_ARTICLE_TITLE);
         summaryView.setTransitionName(VIEW_NAME_ARTICLE_SUMMARY);
+
+        relatedArticles = findViewById(R.id.related_articles);
     }
 
     @Override
@@ -130,11 +146,15 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.read_more_btn:
-                openArticle();
+                openArticle(article.getUrl());
                 break;
             case R.id.like_btn:
                 likeArticle();
                 break;
+            case R.id.related_articles:
+                Button button = (Button) view;
+                String url = button.getText().toString();
+                openArticle(url);
             default:
                 break;
         }
@@ -188,10 +208,10 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    public void openArticle() {
+    public void openArticle(String url) {
         Intent openUrlIntent = new Intent();
         openUrlIntent.setAction(Intent.ACTION_VIEW);
-        openUrlIntent.setData(Uri.parse(article.getUrl()));
+        openUrlIntent.setData(Uri.parse(url));
         startActivity(openUrlIntent);
     }
 

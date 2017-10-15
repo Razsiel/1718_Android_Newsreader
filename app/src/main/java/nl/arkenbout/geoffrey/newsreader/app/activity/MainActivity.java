@@ -4,12 +4,12 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,6 +30,7 @@ import nl.arkenbout.geoffrey.newsreader.model.User;
 public class MainActivity extends AppCompatActivity implements ListItemClickListener, View.OnClickListener {
 
     public static final String INTENT_ARTICLE = "intent_article";
+
     private final int scrollLenience = 10;
     private final int loginRequestCode = 100;
     private final int detailRequestCode = 200;
@@ -38,9 +40,11 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     private LinearLayoutManager verticalList;
 
     private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefresh;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle drawerToggle;
     private Button loginButton;
+    private Button logoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +54,22 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
         progressBar = findViewById(R.id.progressbar);
 
         initRecyclerView();
-        initToolbar();
+        initToolbarAndDrawer();
+        initPullRefresh();
 
         // Load initial items
         adapter.reload();
+    }
+
+    private void initPullRefresh() {
+        swipeRefresh = findViewById(R.id.layout_pull_refresh);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.reload();
+                swipeRefresh.setRefreshing(false);
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -84,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
         });
     }
 
-    private void initToolbar() {
+    private void initToolbarAndDrawer() {
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,11 +121,14 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
         drawer.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        // Drawer content
-        if (TextUtils.isEmpty(User.getAuthtoken())) {
-            loginButton = findViewById(R.id.login_button);
-            loginButton.setOnClickListener(this);
-        }
+
+        loginButton = findViewById(R.id.login_button);
+        loginButton.setOnClickListener(this);
+
+        logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(this);
+
+        reloadLoggedInVisibility();
     }
 
     @Override
@@ -162,6 +181,12 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, loginRequestCode);
                 break;
+            case R.id.logout_button:
+                Toast.makeText(this, getString(R.string.toast_logged_out), Toast.LENGTH_SHORT).show();
+                User.setAuthtoken(null);
+                // refresh activity
+                finish();
+                startActivity(getIntent());
             default:
                 break;
         }
@@ -189,7 +214,8 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     }
 
     private void onLoginActivityResult() {
-        loginButton.setVisibility(View.GONE);
+        reloadLoggedInVisibility();
+
         drawer.closeDrawers();
         adapter.reload();
     }
@@ -202,5 +228,13 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
         adapter.updateArticle(article);
         adapter.refresh();
+    }
+
+    private void reloadLoggedInVisibility() {
+        int loggedInVisible = User.isLoggedIn() ? View.VISIBLE : View.GONE;
+        int loggedInGone = User.isLoggedIn() ? View.GONE : View.VISIBLE;
+
+        loginButton.setVisibility(loggedInGone);
+        logoutButton.setVisibility(loggedInVisible);
     }
 }

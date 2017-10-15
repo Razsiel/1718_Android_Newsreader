@@ -16,11 +16,14 @@
     <string name="error_password_too_short">Het ingevulde wachtwoord is te kort</string>
     <string name="error_login_failed">Er is iets misgegaan met het inloggen: %1$s</string>
     <string name="toast_logged_in">Ingelogd</string>
+    <string name="toast_logged_out">Uitgelogd</string>
     <string name="like">Like</string>
     <string name="unlike">Unlike</string>
-    <string name="placeholder_titel">Titel</string>
+    <string name="placeholder_title">Titel</string>
     <string name="placeholder_summary">Beschrijving</string>
     <string name="toast_something_went_wrong">Er is iets misgegaan.</string>
     <string name="toast_article_liked">Liked</string>
     <string name="toast_article_unliked">Unliked</string>
+    <string name="logout">Log uit</string>
+    <string name="article_image">article image</string>
 </resources>

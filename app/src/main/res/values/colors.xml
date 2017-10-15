@@ -6,4 +6,5 @@
     <color name="colorPrimaryDark">#BD0266</color>
     <color name="neutral">#C0C0C0</color>
     <color name="dark">#444</color>
+    <color name="transparant">#FFFFFFFF</color>
 </resources>

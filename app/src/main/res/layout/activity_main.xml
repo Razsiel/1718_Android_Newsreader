@@ -23,15 +23,25 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerList"
+            <!-- Pull to refresh -->
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/layout_pull_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="16dp"
-                tools:context=".app.activity.MainActivity"
-                tools:listitem="@layout/news_list_item" />
+                android:layout_height="match_parent">
 
+                <!-- List of items -->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="16dp"
+                    tools:context=".app.activity.MainActivity"
+                    tools:listitem="@layout/news_list_item" />
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <!-- Loading icon -->
             <ProgressBar
                 android:id="@+id/progressbar"
                 android:layout_width="wrap_content"
@@ -43,6 +53,7 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <!-- Side panel -->
     <RelativeLayout
         android:id="@+id/drawerPanel"
         android:layout_width="240dp"
@@ -52,6 +63,7 @@
         android:choiceMode="singleChoice"
         android:orientation="vertical">
 
+        <!-- Log in button -->
         <Button
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
@@ -59,6 +71,16 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:text="@string/login" />
+
+        <!-- Log out button -->
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/logout"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>
